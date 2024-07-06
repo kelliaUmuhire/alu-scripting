@@ -1,17 +1,21 @@
 #!/usr/bin/python3
-"""Return the number of subscribers of a given subreddit"""
+"""get subscribers numbers function"""
 
+
+import json
 import requests
+import sys
 
 
 def number_of_subscribers(subreddit):
-    """function that fetches number_of_subscribers"""
-    URL = "https://www.reddit.com/r/{}/about.json".format(subreddit)
-    HEADERS = {"User-Agent": "PostmanRuntime/7.35.0"}
-
-    try:
-        RESPONSE = requests.get(URL, headers=HEADERS, allow_redirects=False)
-        return RESPONSE.json().get("data").get("subscribers")
-
-    except Exception:
+    """get all subscribers"""
+    if len(sys.argv) < 2:
         return 0
+    else:
+        url = "https://www.reddit.com/r/{}/about.json".format(subreddit)
+        headers = {"User-Agent": "Mozilla/5.0"}
+        result = requests.get(url, headers=headers, allow_redirects=False)
+        if result.status_code != 200:
+            return 0
+        body = json.loads(result.text)
+        return body["data"]["subscribers"]
